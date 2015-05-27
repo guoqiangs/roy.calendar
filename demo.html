@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+</head>
+<script src="Scripts/jquery-1.7.1.js"></script>
+<script src="Scripts/jQuery.md5.js"></script>
+<script src="Url.js"></script>
+<script src="Config.js"></script>
+<script src="Scripts/jquery.json-2.2.min.js"></script>
+<body>
+    <script type="text/javascript">
+        var date = Math.random();
+        var obj = {};
+        obj.apiUrl = "http://xytest.staff.xdf.cn/api/Calendar/";
+        obj.method = "getcalendareventlistofteacher";
+        obj.appid = Config.AppId;
+        obj.schoolId = 3;
+		obj.teacherCode = "TCGZ0050158";
+        obj.fromDay = "2014-09-28";
+		obj.toDay = "2014-11-8";
+		obj.language = 1;
+        obj.date = date;   //取消缓存使用
+        obj.appkey = Config.AppKey;//appKey必须放到最后
+        var sign = GetSign(obj);
+        obj.sign = sign;
+
+        delete obj["appkey"];
+        var _data = $.toJSON(obj);
+        var data = JSON.parse(_data);
+
+        //调用接口
+        $.ajax({
+            url: "http://xytest.staff.xdf.cn/api/JSONP/Index",
+            data: data,
+            dataType: "jsonp",
+            jsonp: "callback",//此项必填，不能更改
+            success: function (data) {
+                document.writeln(JSON.stringify(data));
+            }
+        });
+
+        function GetSign(obj) {
+            if (obj == null) {
+                throw "obj is null!";
+            }
+            var param = "";
+
+            var a = $.param(obj);
+
+            for (var key in obj) {
+                param += key + "=" + obj[key] + "&";
+            }
+            if (param.length > 0) {
+                param = param.substr(0, param.length - 1);
+            }
+            return $.md5(param.toLowerCase()).toUpperCase();
+        }
+    </script>
+
+
+
+</body>
+</html>
